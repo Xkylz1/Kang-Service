@@ -117,7 +117,7 @@ function AdminDashboard() {
       <Sidebar />
       <div className="container-fluid p-4">
         <h2>User Management System</h2>
-        <Button variant="primary" className="mb-3" onClick={handleCreateUser}>
+        <Button variant="dark" className="mb-3" onClick={handleCreateUser}>
           {'Create User'}
         </Button>
         <UserTable users={users} handleEditUser={handleEditUser} handleDeleteUser={handleDeleteUser} />
