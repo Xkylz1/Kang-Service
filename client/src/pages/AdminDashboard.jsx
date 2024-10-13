@@ -12,7 +12,7 @@ function AdminDashboard() {
   const [editingUser, setEditingUser] = useState(null); // For edit functionality
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    username: "",
     role: "",
     password: "",
   });
@@ -47,13 +47,13 @@ function AdminDashboard() {
   // Open the modal for create or edit
   const handleCreateUser = () => {
     setEditingUser(null); // Clear edit mode
-    setFormData({ name: "", email: "", role: "", password: "" }); // Reset form
+    setFormData({ name: "", username: "", role: "", password: "" }); // Reset form
     setShowModal(true);
   };
 
   const handleEditUser = (user) => {
     setEditingUser(user);
-    setFormData({ name: user.name, email: user.username, role: user.role, password: "" });
+    setFormData({ name: user.name, username: user.username, role: user.role, password: "" });
     setShowModal(true); // Open modal for editing
   };
 
@@ -73,7 +73,7 @@ function AdminDashboard() {
     if (response.ok) {
       fetchUsers();
       setShowModal(false);
-      setFormData({ name: "", email: "", role: "", password: "" });
+      setFormData({ name: "", username: "", role: "", password: "" });
     }
   };
 

@@ -23,8 +23,8 @@ const UserFormModal = ({ showModal, setShowModal, formData, handleInputChange, h
           <Form.Label>Username</Form.Label>
           <Form.Control
             type="text"
-            name="email"
-            value={formData.email}
+            name="username"
+            value={formData.username}
             onChange={handleInputChange}
             placeholder="Enter username"
           />
