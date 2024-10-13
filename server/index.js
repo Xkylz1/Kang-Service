@@ -9,9 +9,10 @@ const port = 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow your Vite frontend
+    origin: ["http://localhost:5173", "https://your-deployed-frontend.com"], // Allow both local and deployed frontends
   })
 );
+
 
 // Middleware Reading json from body (client)
 app.use(express.json());
