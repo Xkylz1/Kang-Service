@@ -6,9 +6,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import LandingPage from './pages/LandingPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Add a loading state
 
   // Load user from localStorage when the component mounts
   useEffect(() => {
@@ -16,7 +16,13 @@ function App() {
     if (storedUser) {
       setUser(storedUser);
     }
+    setLoading(false); // Set loading to false once user is retrieved
   }, []);
+
+  if (loading) {
+    // Display a loading indicator while checking user state
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>

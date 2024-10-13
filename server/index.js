@@ -8,11 +8,15 @@ const app = express();
 const port = 3000;
 
 // Use CORS middleware
+const cors = require('cors');
+
+// Modify CORS configuration
 app.use(cors({
-  origin: 'https://kangservices.netlify.app', // Allow requests from your frontend domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific methods if needed
-  credentials: true, // Include credentials if necessary
+  origin: ['https://kangservices.netlify.app', 'http://localhost:5173'], // Allow requests from both your frontend domain and local development
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+  credentials: true, // Include credentials (e.g., cookies, authorization headers)
 }));
+
 
 
 // Middleware Reading json from body (client)
