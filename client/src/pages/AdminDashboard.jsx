@@ -6,7 +6,7 @@ import UserTable from '../components/UserTable';
 import UserFormModal from '../components/UserFormModal';
 import PaginationComponent from '../components/PaginationComponent';
 
-function AdminDashboard() {
+function AdminDashboard({ onLogout }) {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -31,7 +31,7 @@ function AdminDashboard() {
   
     if (result.isSuccess) {
       setUsers(result.data.users);
-      const totalUsers = result.data.totalUsers;
+      const totalUsers = result.data.totalUsers; // Assuming your API sends total user count
       setTotalPages(Math.ceil(totalUsers / limit));
     }
   };
@@ -82,6 +82,11 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
+        Swal.fire(
+          'Success!',
+          `User ${editingUser ? 'updated' : 'created'} successfully.`,
+          'success'
+        );
         fetchUsers();
         setShowModal(false);
         setFormData({ name: "", username: "", role: "", password: "" });
@@ -103,6 +108,11 @@ function AdminDashboard() {
     if (confirmationResult.isConfirmed) {
       const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users/${userId}`, { method: "DELETE" });
       if (response.ok) {
+        Swal.fire(
+          'Deleted!',
+          'User has been deleted.',
+          'success'
+        );
         fetchUsers();
       }
     }
@@ -114,10 +124,10 @@ function AdminDashboard() {
 
   return (
     <div className="d-flex">
-      <Sidebar />
+      <Sidebar onLogout={onLogout} />
       <div className="container-fluid px-4">
         <div className="d-flex justify-content-between align-items-center mt-3 mb-2">
-          <h2 >User Management System</h2>
+          <h2>User Management System</h2>
           <Button variant="dark" onClick={handleCreateUser}>
             Create User
           </Button>
@@ -129,14 +139,12 @@ function AdminDashboard() {
           setShowModal={setShowModal}
           formData={formData}
           handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}  // Pass the handleSubmit function
+          handleSubmit={handleSubmit} // Pass the handleSubmit function
           editingUser={editingUser}
         />
       </div>
     </div>
   );
-  
-  
 }
 
 export default AdminDashboard;

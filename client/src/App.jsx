@@ -6,7 +6,6 @@ import AdminDashboard from './pages/AdminDashboard';
 import LandingPage from './pages/LandingPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Add a loading state
@@ -19,6 +18,11 @@ function App() {
     }
     setLoading(false); // Set loading to false once user is retrieved
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user'); // Clear user from localStorage
+    setUser(null); // Update user state
+  };
 
   if (loading) {
     // Display a loading indicator while checking user state
@@ -46,7 +50,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
-          element={user && user.role === 'admin' ? <AdminDashboard /> : <Navigate to="/" />}
+          element={user && user.role === 'admin' ? <AdminDashboard onLogout={handleLogout} /> : <Navigate to="/" />}
         />
       </Routes>
     </Router>
