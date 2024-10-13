@@ -11,10 +11,13 @@ function Login({ setUser }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("https://kang-service-yu4p.onrender.com/api/login", {
-        username,
-        password,
-      });
+      const { data } = await axios.post(
+        "https://kang-service-yu4p.onrender.com/api/login",
+        {
+          username,
+          password,
+        }
+      );
 
       // Store user in localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -43,37 +46,55 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="container mt-5">
-    <h2 className="text-center mb-4">Login</h2>
-    <form onSubmit={handleLogin} className="shadow p-4 rounded">
-      <div className="mb-3">
-        <label htmlFor="username" className="form-label">Username:</label>
-        <input
-          type="text"
-          id="username"
-          className="form-control"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter your username"
-          required
-        />
+    <div
+      className="d-flex align-items-center justify-content-center"
+      style={{ height: "100vh" }}
+    >
+      <div className="row w-100 shadow p-5 rounded mx-5 bg-secondary-subtle">
+        <div className="col"></div>
+        <div className="col-md-4 p-5 bg-light rounded-3">
+          <div className="text-center">
+            <h3>Welcome Back!</h3>
+            <p>Please enter your details</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="mt-5">
+            <div className="mb-3">
+              <label htmlFor="username" className="form-label d-none">
+                Username:
+              </label>
+              <input
+                type="text"
+                id="username"
+                className="form-control border-0 bg-transparent border-bottom" // Remove borders and set transparent background
+                style={{ borderBottom: "2px solid #007bff" }} // Bootstrap primary color for underline
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label d-none">
+                Password:
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="form-control form-control border-0 bg-transparent border-bottom"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-dark w-100 rounded-pill mt-3">
+              Login
+            </button>
+          </form>
+        </div>
       </div>
-      <div className="mb-3">
-        <label htmlFor="password" className="form-label">Password:</label>
-        <input
-          type="password"
-          id="password"
-          className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password"
-          required
-        />
-      </div>
-      <button type="submit" className="btn btn-primary w-100">Login</button>
-    </form>
-  </div>
-  
+    </div>
   );
 }
 
