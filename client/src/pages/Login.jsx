@@ -11,7 +11,7 @@ function Login({ setUser }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("https://kang-service-yu4p.onrender.com", {
+      const { data } = await axios.post("https://kang-service-yu4p.onrender.com/api/login", {
         username,
         password,
       });
