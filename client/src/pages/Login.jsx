@@ -6,10 +6,12 @@ import { useNavigate } from "react-router-dom";
 function Login({ setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     try {
       const { data } = await axios.post(
         "https://kang-service-yu4p.onrender.com/api/login",
@@ -42,6 +44,8 @@ function Login({ setUser }) {
         title: "Login Failed",
         text: error.response.data.message,
       });
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -52,7 +56,7 @@ function Login({ setUser }) {
     >
       <div className="row w-100 shadow p-5 rounded mx-5 bg-secondary-subtle">
         <div className="col"></div>
-        <div className="col-md-4 p-5 bg-light rounded-3">
+        <div className="col-lg-4 col-md-6 p-5 bg-light rounded-3">
           <div className="text-center">
             <h3>Welcome Back!</h3>
             <p>Please enter your details</p>
@@ -66,7 +70,7 @@ function Login({ setUser }) {
               <input
                 type="text"
                 id="username"
-                className="form-control border-0 bg-transparent border-bottom" // Remove borders and set transparent background
+                className="form-control border-0 bg-transparent border-bottom"
                 style={{ borderBottom: "2px solid #007bff" }} // Bootstrap primary color for underline
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -88,9 +92,11 @@ function Login({ setUser }) {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-dark w-100 rounded-pill mt-3">
-              Login
+            <button type="submit" className="btn btn-dark w-100 rounded-pill mt-3" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </button>
+            {/* Optional: Show a loading spinner */}
+            {loading && <div className="text-center mt-2">Logging in, please wait...</div>}
           </form>
         </div>
       </div>
