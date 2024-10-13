@@ -99,11 +99,21 @@ function Login({ setUser }) {
             >
               {loading ? "Logging in..." : "Login"}
             </button>
-            {/* Optional: Show a loading spinner */}
             {loading && (
               <div className="text-center mt-2">Logging in, please wait...</div>
             )}
           </form>
+
+          {/* Register button to navigate to the register page */}
+          <div className="text-center mt-3">
+            <p className="fs-6 fw-light mb-1">Don't have an account?</p>
+            <button
+              className="btn btn-outline-dark px-5 rounded-pill"
+              onClick={() => navigate("/register")}
+            >
+              Register
+            </button>
+          </div>
         </div>
       </div>
     </div>
