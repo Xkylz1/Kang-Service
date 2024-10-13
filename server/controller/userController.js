@@ -148,10 +148,22 @@ async function UpdateUserById(req, res) {
 }
 
 async function createUser(req, res) {
-    const newUser = req.body;
+    const { username, password, name, role } = req.body;
 
     try {
-        await User.create(newUser);
+        // Check if the username already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Username already exists",
+                isSuccess: false,
+                data: null,
+            });
+        }
+
+        // Create a new user if the username doesn't exist
+        const newUser = await User.create({ username, password, name, role });
 
         res.status(200).json({
             status: "Success",
@@ -169,6 +181,7 @@ async function createUser(req, res) {
         });
     }
 }
+
 
 module.exports = {
     getAllUser,
