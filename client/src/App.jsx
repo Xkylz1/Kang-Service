@@ -6,6 +6,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import LandingPage from './pages/LandingPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Add a loading state

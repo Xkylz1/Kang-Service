@@ -3,12 +3,35 @@ const { User } = require("../models");
 // Function for get all user data
 async function getAllUser(req, res) {
     try {
-        const users = await User.findAll();
+        // Get 'page' and 'limit' from query parameters, with default values
+        const page = parseInt(req.query.page) || 1; // Default page = 1
+        const limit = parseInt(req.query.limit) || 10; // Default limit = 10
+        
+        const skip = (page - 1) * limit; // Calculate how many records to skip
+
+        // Get total count of users (for pagination info)
+        const totalUsers = await User.count(); // Assuming you use Sequelize, adjust if using a different ORM
+
+        // Get the users for the current page with the specified limit
+        const users = await User.findAll({
+            offset: skip, // Skip the first 'skip' number of records
+            limit: limit, // Limit the number of records returned
+        });
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalUsers / limit);
+
         res.status(200).json({
             status: "Success",
             message: "Successfully obtained users data",
             isSuccess: true,
-            data: { users },
+            data: {
+                users,
+                totalUsers, // Total number of users
+                totalPages, // Total number of pages
+                currentPage: page, // Current page
+                limit, // Limit of users per page
+            },
         });
     } catch (error) {
         res.status(500).json({
@@ -20,6 +43,7 @@ async function getAllUser(req, res) {
         });
     }
 }
+
 
 // Function for get user data by id
 async function getUserById(req, res) {
