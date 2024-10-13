@@ -11,7 +11,7 @@ const port = 3000;
 // Modify CORS configuration
 app.use(cors({
   origin: ['https://kangservices.netlify.app', 'http://localhost:5173'], // Allow requests from both your frontend domain and local development
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Allow specific HTTP methods
   credentials: true, // Include credentials (e.g., cookies, authorization headers)
 }));
 
