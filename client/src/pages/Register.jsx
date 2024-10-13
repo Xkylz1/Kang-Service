@@ -13,6 +13,7 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true); // Start loading
+
     try {
       await axios.post("https://kang-service-yu4p.onrender.com/api/v1/users", {
         name,
@@ -34,11 +35,24 @@ function Register() {
         setPassword("");
       });
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Registration Failed",
-        text: error.response?.data?.message || "Something went wrong!",
-      });
+      // Check for duplicate username error
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.message === "Username already exists"
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text: "Username is already taken. Please choose another.",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text: error.response?.data?.message || "Something went wrong!",
+        });
+      }
     } finally {
       setLoading(false); // End loading
     }
