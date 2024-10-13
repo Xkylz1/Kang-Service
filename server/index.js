@@ -7,11 +7,12 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "https://your-deployed-frontend.com"], // Allow both local and deployed frontends
-  })
-);
+// Use CORS middleware
+app.use(cors({
+  origin: 'https://kangservices.netlify.app', // Allow requests from your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific methods if needed
+  credentials: true, // Include credentials if necessary
+}));
 
 
 // Middleware Reading json from body (client)
