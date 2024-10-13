@@ -51,10 +51,10 @@ function Login({ setUser }) {
 
   return (
     <div
-      className="d-flex align-items-center justify-content-center"
-      style={{ height: "100vh" }}
+      className="d-flex align-items-center justify-content-center bg-dark p-5"
+      style={{ height: "100vh", margin: 0 }} // Ensure no margin around the parent
     >
-      <div className="row w-100 shadow p-5 rounded mx-5 bg-secondary-subtle">
+      <div className="row w-100 shadow p-5 rounded bg-secondary-subtle mx-5">
         <div className="col"></div>
         <div className="col-lg-4 col-md-6 p-5 bg-light rounded-3">
           <div className="text-center">
@@ -92,11 +92,17 @@ function Login({ setUser }) {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-dark w-100 rounded-pill mt-3" disabled={loading}>
+            <button
+              type="submit"
+              className="btn btn-dark w-100 rounded-pill mt-3"
+              disabled={loading}
+            >
               {loading ? "Logging in..." : "Login"}
             </button>
             {/* Optional: Show a loading spinner */}
-            {loading && <div className="text-center mt-2">Logging in, please wait...</div>}
+            {loading && (
+              <div className="text-center mt-2">Logging in, please wait...</div>
+            )}
           </form>
         </div>
       </div>
