@@ -7,8 +7,6 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 
-// Use CORS middleware
-const cors = require('cors');
 
 // Modify CORS configuration
 app.use(cors({
