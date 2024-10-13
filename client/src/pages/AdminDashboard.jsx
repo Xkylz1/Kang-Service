@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
-import { Modal, Button, Table, Form, Pagination, Nav } from "react-bootstrap"; // Import react-bootstrap components
+import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
+import Sidebar from '../components/Sidebar';
+import UserTable from '../components/UserTable';
+import UserFormModal from '../components/UserFormModal';
+import PaginationComponent from '../components/PaginationComponent';
 
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -92,132 +95,22 @@ function AdminDashboard() {
 
   return (
     <div className="d-flex">
-      {/* Sidebar */}
-      <Nav className="flex-column bg-light p-3" style={{ width: "250px", height: "100vh" }}>
-        <h5>Admin Dashboard</h5>
-        <Nav.Link href="#dashboard">Technician Assignment</Nav.Link>
-        <Nav.Link href="#account-management">Account Management</Nav.Link>
-        <Nav.Link href="#help-center">Help Center</Nav.Link>
-        <Button variant="outline-danger" className="mt-4">Logout</Button>
-      </Nav>
-
-      {/* Main Content */}
+      <Sidebar />
       <div className="container-fluid p-4">
         <h2>User Management System</h2>
-
         <Button variant="primary" className="mb-3" onClick={handleCreateUser}>
-          {editingUser ? "Edit User" : "Create User"}
+          {editingUser ? 'Edit User' : 'Create User'}
         </Button>
-
-        {/* Users Table */}
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Username</th>
-              <th>Role</th>
-              <th>Created At</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-                <td>{user.username}</td>
-                <td>{user.role}</td>
-                <td>{new Date(user.createdAt).toLocaleString()}</td>
-                <td>
-                  <Button variant="warning" onClick={() => handleEditUser(user)}>
-                    Edit
-                  </Button>
-                  <Button
-                    variant="danger"
-                    className="ms-2"
-                    onClick={() => handleDeleteUser(user.id)}
-                  >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-
-        {/* Pagination */}
-        <Pagination>
-          <Pagination.Prev
-            disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-          />
-          <Pagination.Item active>{currentPage}</Pagination.Item>
-          <Pagination.Next
-            disabled={currentPage === totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-          />
-        </Pagination>
-
-        {/* Modal for Create/Edit User */}
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>{editingUser ? "Edit User" : "Create User"}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="name">
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter name"
-                />
-              </Form.Group>
-
-              <Form.Group controlId="email">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter username"
-                />
-              </Form.Group>
-
-              <Form.Group controlId="role">
-                <Form.Label>Role</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  placeholder="Enter role"
-                />
-              </Form.Group>
-
-              <Form.Group controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Enter password"
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleSubmit}>
-              {editingUser ? "Update User" : "Create User"}
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <UserTable users={users} handleEditUser={handleEditUser} handleDeleteUser={handleDeleteUser} />
+        <PaginationComponent currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+        <UserFormModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          editingUser={editingUser}
+        />
       </div>
     </div>
   );
