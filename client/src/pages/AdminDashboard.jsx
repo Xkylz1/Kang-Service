@@ -115,11 +115,13 @@ function AdminDashboard() {
   return (
     <div className="d-flex">
       <Sidebar />
-      <div className="container-fluid p-4">
-        <h2>User Management System</h2>
-        <Button variant="dark" className="mb-3" onClick={handleCreateUser}>
-          {'Create User'}
-        </Button>
+      <div className="container-fluid px-4">
+        <div className="d-flex justify-content-between align-items-center mt-3 mb-2">
+          <h2 >User Management System</h2>
+          <Button variant="dark" onClick={handleCreateUser}>
+            Create User
+          </Button>
+        </div>
         <UserTable users={users} handleEditUser={handleEditUser} handleDeleteUser={handleDeleteUser} />
         <PaginationComponent currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
         <UserFormModal
@@ -133,6 +135,8 @@ function AdminDashboard() {
       </div>
     </div>
   );
+  
+  
 }
 
 export default AdminDashboard;
