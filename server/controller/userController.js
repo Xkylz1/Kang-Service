@@ -152,7 +152,8 @@ async function createUser(req, res) {
 
     try {
         // Check if the username already exists
-        const existingUser = await User.findOne({ username });
+        const existingUser = await User.findOne({ where: { username: username } });
+        
         if (existingUser) {
             return res.status(400).json({
                 status: "Failed",
@@ -163,7 +164,12 @@ async function createUser(req, res) {
         }
 
         // Create a new user if the username doesn't exist
-        const newUser = await User.create({ username, password, name, role });
+        const newUser = await User.create({
+            username,
+            password,
+            name,
+            role: role || "user", // Default role to 'user'
+        });
 
         res.status(200).json({
             status: "Success",
