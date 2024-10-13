@@ -19,6 +19,11 @@ function App() {
     setLoading(false); // Set loading to false once user is retrieved
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('user'); // Clear user from localStorage
+    setUser(null); // Update user state
+  };
+
   if (loading) {
     // Display a loading indicator while checking user state
     return <div>Loading...</div>;
@@ -45,7 +50,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
-          element={user && user.role === 'admin' ? <AdminDashboard /> : <Navigate to="/" />}
+          element={user && user.role === 'admin' ? <AdminDashboard onLogout={handleLogout} /> : <Navigate to="/" />}
         />
       </Routes>
     </Router>

@@ -1,175 +1,147 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
+import Swal from 'sweetalert2'; // Import SweetAlert
+import Sidebar from '../components/Sidebar';
+import UserTable from '../components/UserTable';
+import UserFormModal from '../components/UserFormModal';
+import PaginationComponent from '../components/PaginationComponent';
 
-function AdminDashboard() {
+function AdminDashboard({ onLogout }) {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [editingUser, setEditingUser] = useState(null); // For edit functionality
-  const [formData, setFormData] = useState({ name: '', email: '', role: '', password: '' }); // Include password field
+  const [editingUser, setEditingUser] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    username: "",
+    role: "",
+    password: "",
+  });
+  const [showModal, setShowModal] = useState(false);
 
   // Fetch users data
   useEffect(() => {
     fetchUsers();
   }, [currentPage]);
 
-  // Function to fetch users with pagination
   const fetchUsers = async () => {
-    const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users?page=${currentPage}&limit=10`);
+    const limit = 10;
+    const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users?page=${currentPage}&limit=${limit}`);
     const result = await response.json();
+  
     if (result.isSuccess) {
-      setUsers(result.data.users); // Access nested 'data.users'
-      // Assuming the API doesn't return total pages directly
-      setTotalPages(5); // Assuming 5 pages for now, adjust as per the real response
+      setUsers(result.data.users);
+      const totalUsers = result.data.totalUsers; // Assuming your API sends total user count
+      setTotalPages(Math.ceil(totalUsers / limit));
     }
   };
 
-  // Handle form change
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Create a new user
-  const handleCreateUser = async () => {
-    const response = await fetch('https://kang-service-yu4p.onrender.com/api/v1/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+  const handleCreateUser = () => {
+    setEditingUser(null);
+    setFormData({ name: "", username: "", role: "", password: "" });
+    setShowModal(true);
+  };
+
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    setFormData({ name: user.name, username: user.username, role: user.role, password: "" });
+    setShowModal(true);
+  };
+
+  const handleSubmit = async () => {
+    const confirmationText = editingUser
+      ? "You are about to update this user's information."
+      : "You are about to create a new user.";
+
+    // Show the confirmation dialog
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: confirmationText,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: editingUser ? 'Yes, update it!' : 'Yes, create it!',
     });
-    if (response.ok) {
-      fetchUsers(); // Refresh the list after creating a user
-      setFormData({ name: '', email: '', role: '', password: '' }); // Reset form
+
+    // If the user confirmed, proceed with the submit action
+    if (result.isConfirmed) {
+      const url = editingUser
+        ? `https://kang-service-yu4p.onrender.com/api/v1/users/${editingUser.id}`
+        : "https://kang-service-yu4p.onrender.com/api/v1/users";
+      const method = editingUser ? "PATCH" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        Swal.fire(
+          'Success!',
+          `User ${editingUser ? 'updated' : 'created'} successfully.`,
+          'success'
+        );
+        fetchUsers();
+        setShowModal(false);
+        setFormData({ name: "", username: "", role: "", password: "" });
+      }
     }
   };
 
-  // Update an existing user
-  const handleUpdateUser = async () => {
-    const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users/${editingUser.id}`, {
-      method: 'PATCH', // Changed from PUT to PATCH
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
-  
-    if (response.ok) {
-      fetchUsers(); // Refresh the user list after update
-      setEditingUser(null); // Exit edit mode
-      setFormData({ name: '', email: '', role: '', password: '' }); // Reset form
-    } else {
-      console.error("Failed to update the user");
-    }
-  };
-  
-
-  // Delete a user
   const handleDeleteUser = async (userId) => {
-    const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users/${userId}`, {
-      method: 'DELETE',
+    const confirmationResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You are about to delete this user.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
     });
-    if (response.ok) {
-      fetchUsers(); // Refresh the list after deletion
+
+    if (confirmationResult.isConfirmed) {
+      const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users/${userId}`, { method: "DELETE" });
+      if (response.ok) {
+        Swal.fire(
+          'Deleted!',
+          'User has been deleted.',
+          'success'
+        );
+        fetchUsers();
+      }
     }
   };
 
-  // Handle page navigation
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
-  // Prepare form for edit
-  const handleEditUser = (user) => {
-    setEditingUser(user);
-    setFormData({ name: user.name, email: user.username, role: user.role, password: '' }); // Password left blank on edit for security
-  };
-
   return (
-    <div className="container">
-      <h2>User Management System</h2>
-
-      {/* Create / Edit Form */}
-      <div>
-        <h3>{editingUser ? 'Edit User' : 'Create User'}</h3>
-        <form>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="email"
-            placeholder="Username"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="role"
-            placeholder="Role"
-            value={formData.role}
-            onChange={handleInputChange}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-          <button
-            type="button"
-            onClick={editingUser ? handleUpdateUser : handleCreateUser}
-          >
-            {editingUser ? 'Update' : 'Create'}
-          </button>
-        </form>
-      </div>
-
-      {/* User List */}
-      <div>
-        <h3>User List</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Username</th>
-              <th>Role</th>
-              <th>Created At</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-                <td>{user.username}</td>
-                <td>{user.role}</td>
-                <td>{new Date(user.createdAt).toLocaleString()}</td>
-                <td>
-                  <button onClick={() => handleEditUser(user)}>Edit</button>
-                  <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      <div>
-        <button
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          Previous
-        </button>
-        <span>Page {currentPage} of {totalPages}</span>
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          Next
-        </button>
+    <div className="d-flex">
+      <Sidebar onLogout={onLogout} />
+      <div className="container-fluid px-4">
+        <div className="d-flex justify-content-between align-items-center mt-3 mb-2">
+          <h2>User Management System</h2>
+          <Button variant="dark" onClick={handleCreateUser}>
+            Create User
+          </Button>
+        </div>
+        <UserTable users={users} handleEditUser={handleEditUser} handleDeleteUser={handleDeleteUser} />
+        <PaginationComponent currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+        <UserFormModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit} // Pass the handleSubmit function
+          editingUser={editingUser}
+        />
       </div>
     </div>
   );
