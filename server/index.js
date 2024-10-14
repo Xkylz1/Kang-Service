@@ -1,63 +1,48 @@
-const morgan = require("morgan");
 const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
 const usersRoute = require("./routes/usersRoute.js");
 const { login, register } = require("./controller/authController.js");
-const cors = require("cors");
 
 const app = express();
 const port = 3000;
 
+// CORS configuration
+const corsOptions = {
+  origin: ['https://kangservices.netlify.app', 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
+};
 
-// Modify CORS configuration
-app.use(cors({
-  origin: ['https://kangservices.netlify.app', 'http://localhost:5173'], // Allow requests from both your frontend domain and local development
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Allow specific HTTP methods
-  credentials: true, // Include credentials (e.g., cookies, authorization headers)
-}));
+// Middleware setup
+app.use(cors(corsOptions));
+app.use(express.json()); // Parse JSON bodies
+app.use(morgan("dev")); // Logging middleware
 
-
-
-// Middleware Reading json from body (client)
-app.use(express.json());
-
-// middleware: LOGGINGG!! 3rd party package
-app.use(morgan());
-
-// Health Check
-app.get("/", async (req, res) => {
-  try {
-    res.status(200).json({
-      status: "Succeed",
-      message: "Ping successfully",
-      isSuccess: true,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "Failed",
-      message: "Ping failed",
-      isSuccess: false,
-      error: error.message,
-    });
-  }
+// Health Check endpoint
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "Succeed",
+    message: "Ping successfully",
+    isSuccess: true,
+  });
 });
 
-// Routes
+// API Routes
 app.use("/api/v1/users", usersRoute);
-
-
-
 app.post("/api/login", login);
 app.post("/api/register", register);
 
-// Middleware to handle page not found
-app.use((req, res, next) => {
+// 404 error handler
+app.use((req, res) => {
   res.status(404).json({
     status: "Failed",
-    message: "API not found !",
+    message: "API not found!",
     isSuccess: false,
   });
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`App running on http://localhost:${port}`);
 });
