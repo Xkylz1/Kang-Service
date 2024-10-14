@@ -5,7 +5,7 @@ const usersRoute = require("./routes/usersRoute.js");
 const { login, register } = require("./controller/authController.js");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use environment variable for the port
 
 // CORS configuration
 const corsOptions = {
@@ -22,7 +22,7 @@ app.use(morgan("dev")); // Logging middleware
 // Health Check endpoint
 app.get("/", (req, res) => {
   res.status(200).json({
-    status: "Succeed",
+    status: "Success",
     message: "Ping successfully",
     isSuccess: true,
   });
@@ -39,6 +39,17 @@ app.use((req, res) => {
     status: "Failed",
     message: "API not found!",
     isSuccess: false,
+  });
+});
+
+// Global error handling middleware (optional)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    status: "Error",
+    message: "Something went wrong!",
+    isSuccess: false,
+    error: err.message,
   });
 });
 
