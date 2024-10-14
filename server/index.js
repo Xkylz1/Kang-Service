@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const usersRoute = require("./routes/usersRoute.js");
+const serviceRequestRoutes = require('./routes/serviceRequestRoute.js');
 const { login, register } = require("./controller/authController.js");
 
 const app = express();
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api/v1/users", usersRoute);
+app.use('/api/v1/serviceRequests', serviceRequestRoutes);
 app.post("/api/login", login);
 app.post("/api/register", register);
 
