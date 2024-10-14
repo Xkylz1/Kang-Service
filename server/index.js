@@ -1,63 +1,46 @@
-const morgan = require("morgan");
+require('dotenv').config(); // Load environment variables
 const express = require("express");
-const usersRoute = require("./routes/usersRoute.js");
-const { login, register } = require("./controller/authController.js");
-const cors = require("cors");
+const corsConfig = require("./middleware/corsConfig");
+const logger = require("./middleware/logger");
+const usersRoute = require("./routes/usersRoute");
+const healthRoute = require("./routes/healthRoute");
+const { login, register } = require("./controller/authController");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Load port from .env
 
-
-// Modify CORS configuration
-app.use(cors({
-  origin: ['https://kangservices.netlify.app', 'http://localhost:5173'], // Allow requests from both your frontend domain and local development
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Allow specific HTTP methods
-  credentials: true, // Include credentials (e.g., cookies, authorization headers)
-}));
-
-
-
-// Middleware Reading json from body (client)
+// Middleware
 app.use(express.json());
-
-// middleware: LOGGINGG!! 3rd party package
-app.use(morgan());
-
-// Health Check
-app.get("/", async (req, res) => {
-  try {
-    res.status(200).json({
-      status: "Succeed",
-      message: "Ping successfully",
-      isSuccess: true,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "Failed",
-      message: "Ping failed",
-      isSuccess: false,
-      error: error.message,
-    });
-  }
-});
+app.use(corsConfig); // Apply CORS
+app.use(logger); // Apply logging
 
 // Routes
 app.use("/api/v1/users", usersRoute);
-
-
-
+app.use("/api/health", healthRoute); // Health check moved to /api/health
 app.post("/api/login", login);
 app.post("/api/register", register);
 
-// Middleware to handle page not found
-app.use((req, res, next) => {
+// 404 Handler
+app.use((req, res) => {
   res.status(404).json({
     status: "Failed",
-    message: "API not found !",
+    message: "API not found!",
     isSuccess: false,
   });
 });
 
+// Centralized error handling (Optional)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    status: "Failed",
+    message: "Internal Server Error",
+    isSuccess: false,
+    error: err.message,
+  });
+});
+
+// Server listener
 app.listen(port, () => {
   console.log(`App running on http://localhost:${port}`);
 });
