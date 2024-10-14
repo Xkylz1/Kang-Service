@@ -1,7 +1,6 @@
-// authController.js
 const { User } = require('../models');
 
-// Login function without password hashing
+// Login function
 const login = async (req, res) => {
   const { username, password } = req.body;
 
@@ -13,15 +12,15 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Respond with the user's details if credentials are valid
+    // Respond with the user's details
     res.json({ user });
   } catch (error) {
-    console.error('Error during login', error);
+    console.error('Error during login:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-// Register function without password hashing
+// Register function
 const register = async (req, res) => {
   const { username, name, password } = req.body;
 
@@ -35,9 +34,9 @@ const register = async (req, res) => {
     });
 
     // Respond with a success message and the new user's details
-    res.json({ message: 'User registered successfully', user: newUser });
+    res.status(201).json({ message: 'User registered successfully', user: newUser });
   } catch (error) {
-    console.error('Error during registration', error);
+    console.error('Error during registration:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
