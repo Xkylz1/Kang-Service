@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load environment variables
+require("dotenv").config(); // Load environment variables
 const express = require("express");
 const corsConfig = require("./middleware/corsConfig");
 const logger = require("./middleware/logger");
@@ -15,6 +15,7 @@ app.use(corsConfig); // Apply CORS
 app.use(logger); // Apply logging
 
 // Routes
+app.use("/", healthRoute);
 app.use("/api/v1/users", usersRoute);
 app.use("/api/health", healthRoute); // Health check moved to /api/health
 app.post("/api/login", login);
