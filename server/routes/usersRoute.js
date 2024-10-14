@@ -2,19 +2,22 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controller/userController");
 
-// API for get all users data
+// API for getting all users data
 router.get("/", userController.getAllUser);
 
-// API for get user data by id
+// API for getting user data by id
 router.get("/:id", userController.getUserById);
 
-// API for delete user data by id
+// API for deleting user data by id
 router.delete("/:id", userController.deleteUserById);
 
-// // API for update data by id
+// API for updating data by id
 router.patch("/:id", userController.UpdateUserById);
 
-// // API for create new user data
+// API for creating new user data
 router.post("/", userController.createUser);
+
+// API for creating a new technician
+router.post("/technicians", userController.createTechnician); // Add this line
 
 module.exports = router;

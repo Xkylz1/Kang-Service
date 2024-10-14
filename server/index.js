@@ -3,6 +3,7 @@ const express = require("express");
 const corsConfig = require("./middleware/corsConfig");
 const logger = require("./middleware/logger");
 const usersRoute = require("./routes/usersRoute");
+const serviceRequestRoutes = require('./routes/serviceRequestRoute');
 const healthRoute = require("./routes/healthRoute");
 const { login, register } = require("./controller/authController");
 
@@ -17,6 +18,7 @@ app.use(logger); // Apply logging
 // Routes
 app.use("/", healthRoute);
 app.use("/api/v1/users", usersRoute);
+app.use('/api/v1/service-requests', serviceRequestRoutes);
 app.use("/api/health", healthRoute); // Health check moved to /api/health
 app.post("/api/login", login);
 app.post("/api/register", register);

@@ -1,12 +1,11 @@
-// authController.js
 const { User } = require('../models');
 
-// Login function without password hashing
+// Login function that handles both users and technicians
 const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Find the user in the database by username and password
+    // Attempt to find the user by username and password
     const user = await User.findOne({ where: { username, password } });
 
     if (!user) {
@@ -21,7 +20,7 @@ const login = async (req, res) => {
   }
 };
 
-// Register function without password hashing
+// Register function for users
 const register = async (req, res) => {
   const { username, name, password } = req.body;
 

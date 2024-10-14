@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Technician } = require("../models");
 
 // Function for get all user data
 async function getAllUser(req, res) {
@@ -188,11 +188,52 @@ async function createUser(req, res) {
     }
 }
 
+// Function to create a technician
+async function createTechnician(req, res) {
+    const { userId, expertise, serviceQueue } = req.body; // Assuming these come from the request body
 
+    try {
+        // Find the user by ID
+        const user = await User.findByPk(userId);
+        
+        // Check if user exists and has the role of technician
+        if (user && user.role === 'technician') {
+            const technician = await Technician.create({
+                expertise,
+                serviceQueue,
+                userId: user.id // Linking technician to the user
+            });
+            return res.status(201).json({
+                status: "Success",
+                message: "Successfully created technician",
+                isSuccess: true,
+                data: { technician },
+            });
+        } else {
+            return res.status(400).json({
+                status: "Failed",
+                message: "User is not a technician or does not exist.",
+                isSuccess: false,
+                data: null,
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            status: "Failed",
+            message: "Failed to create technician",
+            isSuccess: false,
+            data: null,
+            error: error.message,
+        });
+    }
+}
+
+// Exporting functions
 module.exports = {
     getAllUser,
     getUserById,
     deleteUserById,
     UpdateUserById,
     createUser,
+    createTechnician, // Export the new function
 };
