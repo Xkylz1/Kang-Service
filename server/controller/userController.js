@@ -1,25 +1,20 @@
 const { User } = require("../models");
+// const bcrypt = require('bcrypt');
 
-// Function for get all user data
+// Function to get all user data
 async function getAllUser(req, res) {
     try {
-        // Get 'page' and 'limit' from query parameters, with default values
         const page = parseInt(req.query.page) || 1; // Default page = 1
         const limit = parseInt(req.query.limit) || 10; // Default limit = 10
-        
-        const skip = (page - 1) * limit; // Calculate how many records to skip
+        const skip = (page - 1) * limit; // Calculate records to skip
 
-        // Get total count of users (for pagination info)
-        const totalUsers = await User.count(); // Assuming you use Sequelize, adjust if using a different ORM
-
-        // Get the users for the current page with the specified limit
+        const totalUsers = await User.count();
         const users = await User.findAll({
-            offset: skip, // Skip the first 'skip' number of records
-            limit: limit, // Limit the number of records returned
+            offset: skip,
+            limit: limit,
         });
 
-        // Calculate total pages
-        const totalPages = Math.ceil(totalUsers / limit);
+        const totalPages = Math.ceil(totalUsers / limit); // Calculate total pages
 
         res.status(200).json({
             status: "Success",
@@ -27,10 +22,10 @@ async function getAllUser(req, res) {
             isSuccess: true,
             data: {
                 users,
-                totalUsers, // Total number of users
-                totalPages, // Total number of pages
-                currentPage: page, // Current page
-                limit, // Limit of users per page
+                totalUsers,
+                totalPages,
+                currentPage: page,
+                limit,
             },
         });
     } catch (error) {
@@ -38,14 +33,12 @@ async function getAllUser(req, res) {
             status: "Failed",
             message: "Failed to get users data",
             isSuccess: false,
-            data: null,
             error: error.message,
         });
     }
 }
 
-
-// Function for get user data by id
+// Function to get user data by id
 async function getUserById(req, res) {
     const id = req.params.id;
     try {
@@ -53,9 +46,8 @@ async function getUserById(req, res) {
         if (!user) {
             return res.status(404).json({
                 status: "Failed",
-                message: "Can't find spesific id user",
+                message: "User not found with the provided ID",
                 isSuccess: false,
-                data: null,
             });
         }
         res.status(200).json({
@@ -69,13 +61,12 @@ async function getUserById(req, res) {
             status: "Failed",
             message: "Failed to get user data",
             isSuccess: false,
-            data: null,
             error: error.message,
         });
     }
 }
 
-// Function for delete user by id
+// Function to delete user by id
 async function deleteUserById(req, res) {
     const id = req.params.id;
     try {
@@ -83,9 +74,8 @@ async function deleteUserById(req, res) {
         if (!user) {
             return res.status(404).json({
                 status: "Failed",
-                message: "Can't find spesific id user",
+                message: "User not found with the provided ID",
                 isSuccess: false,
-                data: null,
             });
         }
 
@@ -93,7 +83,7 @@ async function deleteUserById(req, res) {
 
         res.status(200).json({
             status: "Success",
-            message: "Successfully delete user data",
+            message: "Successfully deleted user data",
             isSuccess: true,
             data: { user },
         });
@@ -102,37 +92,50 @@ async function deleteUserById(req, res) {
             status: "Failed",
             message: "Failed to delete user data",
             isSuccess: false,
-            data: null,
             error: error.message,
         });
     }
 }
 
-// Function for update user by id
-async function UpdateUserById(req, res) {
+// Function to update user by id
+async function updateUserById(req, res) {
     const { username, name, password, role } = req.body;
     const id = req.params.id;
+
+    // Validate required fields
+    if (!username || !name) {
+        return res.status(400).json({
+            status: "Failed",
+            message: "Username and name are required.",
+            isSuccess: false,
+        });
+    }
+
     try {
         const user = await User.findByPk(id);
         if (!user) {
             return res.status(404).json({
                 status: "Failed",
-                message: "Can't find spesific id user",
+                message: "User not found with the provided ID",
                 isSuccess: false,
-                data: null,
             });
         }
 
+        // Update user fields
         user.username = username;
         user.name = name;
-        user.password = password;
+        // if (password) {
+        //     // Hash the password if provided
+        //     user.password = await bcrypt.hash(password, 10);
+        // }
+        user.password=password;
         user.role = role;
 
         await user.save();
 
         res.status(200).json({
             status: "Success",
-            message: "Successfully update user data",
+            message: "Successfully updated user data",
             isSuccess: true,
             data: { user },
         });
@@ -141,27 +144,37 @@ async function UpdateUserById(req, res) {
             status: "Failed",
             message: "Failed to update user data",
             isSuccess: false,
-            data: null,
             error: error.message,
         });
     }
 }
 
+// Function to create a new user
 async function createUser(req, res) {
     const { username, password, name, role } = req.body;
 
+    // Validate required fields
+    if (!username || !password || !name) {
+        return res.status(400).json({
+            status: "Failed",
+            message: "Username, password, and name are required.",
+            isSuccess: false,
+        });
+    }
+
     try {
         // Check if the username already exists
-        const existingUser = await User.findOne({ where: { username: username } });
-        
+        const existingUser = await User.findOne({ where: { username } });
         if (existingUser) {
             return res.status(400).json({
                 status: "Failed",
                 message: "Username already exists",
                 isSuccess: false,
-                data: null,
             });
         }
+
+        // Hash the password before saving
+        // const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new user if the username doesn't exist
         const newUser = await User.create({
@@ -171,7 +184,7 @@ async function createUser(req, res) {
             role: role || "user", // Default role to 'user'
         });
 
-        res.status(200).json({
+        res.status(201).json({
             status: "Success",
             message: "Successfully added user data",
             isSuccess: true,
@@ -182,17 +195,15 @@ async function createUser(req, res) {
             status: "Failed",
             message: "Failed to add user data",
             isSuccess: false,
-            data: null,
             error: error.message,
         });
     }
 }
 
-
 module.exports = {
     getAllUser,
     getUserById,
     deleteUserById,
-    UpdateUserById,
+    updateUserById,
     createUser,
 };

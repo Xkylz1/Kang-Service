@@ -2,19 +2,14 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controller/userController");
 
-// API for get all users data
-router.get("/", userController.getAllUser);
+// Routes for user management
+router.route("/")
+  .get(userController.getAllUser)           // Get all users
+  .post(userController.createUser);          // Create a new user
 
-// API for get user data by id
-router.get("/:id", userController.getUserById);
-
-// API for delete user data by id
-router.delete("/:id", userController.deleteUserById);
-
-// // API for update data by id
-router.patch("/:id", userController.UpdateUserById);
-
-// // API for create new user data
-router.post("/", userController.createUser);
+router.route("/:id")
+  .get(userController.getUserById)          // Get user by ID
+  .patch(userController.updateUserById)     // Update user by ID
+  .delete(userController.deleteUserById);   // Delete user by ID
 
 module.exports = router;
