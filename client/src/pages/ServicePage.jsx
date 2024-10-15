@@ -42,12 +42,12 @@ const ServicePage = ({ user,setUser }) => {
         );
         setServiceRequests(response.data); // Set the fetched service requests in state
       } catch (error) {
-        console.error("Error fetching service requests:", error);
-        Swal.fire(
-          "Error",
-          "Failed to load service requests. Please try again later.",
-          "error"
-        );
+        // console.error("Error fetching service requests:", error);
+        // Swal.fire(
+        //   "Error",
+        //   "Failed to load service requests. Please try again later.",
+        //   "error"
+        // );
       } finally {
         setLoading(false);
       }
