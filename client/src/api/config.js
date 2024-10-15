@@ -6,6 +6,8 @@ const apiEndpoints = {
   user: `${baseURL}/api/v1/users`,
   serviceRequest: `${baseURL}/api/v1/serviceRequests`,
   technician: `${baseURL}/api/v1/technicians`,
+  login:`${baseURL}/api/login`,
+  register:`${baseURL}/api/register`
 };
 
 export default apiEndpoints;

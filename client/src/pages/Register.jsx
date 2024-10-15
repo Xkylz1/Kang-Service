@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import apiEndpoints from "../api/config";
 
 function Register() {
   const [name, setName] = useState("");
@@ -15,7 +16,7 @@ function Register() {
     setLoading(true); // Start loading
 
     try {
-      await axios.post("https://kang-service-yu4p.onrender.com/api/v1/users", {
+      await axios.post(`${apiEndpoints.register}`, {
         name,
         username,
         password,
@@ -72,7 +73,9 @@ function Register() {
           </div>
           <form onSubmit={handleRegister} className="mt-5">
             <div className="mb-3">
-              <label htmlFor="name" className="form-label d-none">Name:</label>
+              <label htmlFor="name" className="form-label d-none">
+                Name:
+              </label>
               <input
                 type="text"
                 id="name"
@@ -85,7 +88,9 @@ function Register() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="username" className="form-label d-none">Username:</label>
+              <label htmlFor="username" className="form-label d-none">
+                Username:
+              </label>
               <input
                 type="text"
                 id="username"
@@ -98,7 +103,9 @@ function Register() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="password" className="form-label d-none">Password:</label>
+              <label htmlFor="password" className="form-label d-none">
+                Password:
+              </label>
               <input
                 type="password"
                 id="password"
