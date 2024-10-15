@@ -78,7 +78,7 @@ function App() {
           path="/service"
           element={
             user && user.role === "user" ? (
-              <ServicePage user={user} />
+              <ServicePage user={user} setUser={setUser}/>
             ) : (
               <Navigate to="/" />
             )
