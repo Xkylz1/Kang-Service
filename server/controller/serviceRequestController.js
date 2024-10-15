@@ -35,6 +35,23 @@ exports.getServiceRequestById = async (req, res) => {
   }
 };
 
+exports.getServiceRequestsByUserId = async (req, res) => {
+  try {
+    const serviceRequests = await ServiceRequest.findAll({ 
+      where: { userId: req.params.userId } // Querying by userId
+    });
+    
+    if (!serviceRequests.length) {
+      return res.status(404).json({ message: 'No service requests found for this user' });
+    }
+    
+    res.status(200).json(serviceRequests); // Return all found service requests
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 // Update a service request
 exports.updateServiceRequest = async (req, res) => {
   try {
