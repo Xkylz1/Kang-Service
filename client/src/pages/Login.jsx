@@ -53,12 +53,12 @@ function Login({ setUser }) {
 
   return (
     <div
-      className="d-flex align-items-center justify-content-center bg-dark p-5"
+      className="d-flex align-items-center justify-content-center bg-dark p-md-5 p-3 "
       style={{ height: "100vh", margin: 0 }} // Ensure no margin around the parent
     >
-      <div className="row w-100 shadow p-5 rounded bg-secondary-subtle mx-5">
+      <div className="row w-100 shadow p-md-5 p-2 rounded bg-secondary-subtle mx-md-5 mx-1">
         <div className="col"></div>
-        <div className="col-lg-4 col-md-6 p-5 bg-light rounded-3">
+        <div className="col-lg-4 col-md-6 p-3 py-5 p-md-5 bg-light rounded-3">
           <div className="text-center">
             <h3>Welcome Back!</h3>
             <p>Please enter your details</p>
