@@ -6,6 +6,8 @@ function LandingPage() {
       <h1>Welcome to the Landing Page!</h1>
       <p>This page is for regular users. Enjoy your experience on our platform.</p>
       {/* Add additional user-specific content here */}
+
+      
     </div>
   );
 }

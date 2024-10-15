@@ -4,28 +4,27 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import LandingPage from './pages/LandingPage';
+import UserPage from './pages/UserPage'; // Import the UserPage component
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Add a loading state
+  const [loading, setLoading] = useState(true);
 
-  // Load user from localStorage when the component mounts
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
       setUser(storedUser);
     }
-    setLoading(false); // Set loading to false once user is retrieved
+    setLoading(false);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('user'); // Clear user from localStorage
-    setUser(null); // Update user state
+    localStorage.removeItem('user');
+    setUser(null);
   };
 
   if (loading) {
-    // Display a loading indicator while checking user state
     return <div>Loading...</div>;
   }
 
@@ -38,6 +37,8 @@ function App() {
             user ? (
               user.role === 'admin' ? (
                 <Navigate to="/admin" />
+              ) : user.role === 'user' ? ( // Check if the user is a 'user'
+                <Navigate to="/user" /> // Redirect to UserPage
               ) : (
                 <LandingPage />
               )
@@ -46,12 +47,16 @@ function App() {
             )
           }
         />
-        
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
           element={user && user.role === 'admin' ? <AdminDashboard onLogout={handleLogout} /> : <Navigate to="/" />}
         />
+       <Route
+  path="/user"
+  element={user && user.role === 'user' ? <UserPage user={user} /> : <Navigate to="/" />}
+/>
+
       </Routes>
     </Router>
   );
