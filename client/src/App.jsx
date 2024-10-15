@@ -1,18 +1,24 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import AdminDashboard from './pages/AdminDashboard';
-import LandingPage from './pages/LandingPage';
-import UserPage from './pages/UserPage'; // Import the UserPage component
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AdminDashboard from "./pages/AdminDashboard";
+import LandingPage from "./pages/LandingPage";
+import UserPage from "./pages/UserPage";
+import ServicePage from './pages/ServicePage'; // Import ServicePage
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
     }
@@ -20,7 +26,7 @@ function App() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
     setUser(null);
   };
 
@@ -35,10 +41,10 @@ function App() {
           path="/"
           element={
             user ? (
-              user.role === 'admin' ? (
+              user.role === "admin" ? (
                 <Navigate to="/admin" />
-              ) : user.role === 'user' ? ( // Check if the user is a 'user'
-                <Navigate to="/user" /> // Redirect to UserPage
+              ) : user.role === "user" ? (
+                <Navigate to="/user" />
               ) : (
                 <LandingPage />
               )
@@ -50,13 +56,34 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
-          element={user && user.role === 'admin' ? <AdminDashboard onLogout={handleLogout} /> : <Navigate to="/" />}
+          element={
+            user && user.role === "admin" ? (
+              <AdminDashboard onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
         />
-       <Route
-  path="/user"
-  element={user && user.role === 'user' ? <UserPage user={user} /> : <Navigate to="/" />}
-/>
-
+        <Route
+          path="/user"
+          element={
+            user && user.role === "user" ? (
+              <UserPage user={user} setUser={setUser} />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/service"
+          element={
+            user && user.role === "user" ? (
+              <ServicePage user={user} />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
       </Routes>
     </Router>
   );
