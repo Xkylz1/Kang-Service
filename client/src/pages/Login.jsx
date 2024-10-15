@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import apiEndpoints from "../api/config";
+
 
 function Login({ setUser }) {
   const [username, setUsername] = useState("");
@@ -14,7 +16,7 @@ function Login({ setUser }) {
     setLoading(true); // Start loading
     try {
       const { data } = await axios.post(
-        "https://kang-service-yu4p.onrender.com/api/login",
+        `${apiEndpoints.login}`,
         {
           username,
           password,

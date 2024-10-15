@@ -5,6 +5,8 @@ import Sidebar from '../components/Sidebar';
 import UserTable from '../components/UserTable';
 import UserFormModal from '../components/UserFormModal';
 import PaginationComponent from '../components/PaginationComponent';
+import apiEndpoints from "../api/config";
+
 
 function AdminDashboard({ onLogout }) {
   const [users, setUsers] = useState([]);
@@ -26,7 +28,7 @@ function AdminDashboard({ onLogout }) {
 
   const fetchUsers = async () => {
     const limit = 10;
-    const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users?page=${currentPage}&limit=${limit}`);
+    const response = await fetch(`${apiEndpoints.user}?page=${currentPage}&limit=${limit}`);
     const result = await response.json();
   
     if (result.isSuccess) {
@@ -71,8 +73,8 @@ function AdminDashboard({ onLogout }) {
     // If the user confirmed, proceed with the submit action
     if (result.isConfirmed) {
       const url = editingUser
-        ? `https://kang-service-yu4p.onrender.com/api/v1/users/${editingUser.id}`
-        : "https://kang-service-yu4p.onrender.com/api/v1/users";
+        ? `${apiEndpoints.user}/${editingUser.id}`
+        : `${apiEndpoints.user}`;
       const method = editingUser ? "PATCH" : "POST";
 
       const response = await fetch(url, {
@@ -106,7 +108,7 @@ function AdminDashboard({ onLogout }) {
     });
 
     if (confirmationResult.isConfirmed) {
-      const response = await fetch(`https://kang-service-yu4p.onrender.com/api/v1/users/${userId}`, { method: "DELETE" });
+      const response = await fetch(`${apiEndpoints.user}/${userId}`, { method: "DELETE" });
       if (response.ok) {
         Swal.fire(
           'Deleted!',
