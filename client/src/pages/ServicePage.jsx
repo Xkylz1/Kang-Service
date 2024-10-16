@@ -10,7 +10,9 @@ import ServiceRequestModal from "../components/ServiceRequestModal"; // Assuming
 const ServicePage = ({ user, setUser }) => {
   const [serviceRequests, setServiceRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   const navigate = useNavigate();
+  const { openModal } = ServiceRequestModal({ user, setLoading });
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -65,11 +67,8 @@ const ServicePage = ({ user, setUser }) => {
         <h1>Your Submitted Service Requests</h1>
         
         {/* Button to submit a new service request */}
-        <button className="btn btn-secondary mb-3" onClick={() => {
-          const serviceRequestModal = new ServiceRequestModal({ user, setLoading });
-          serviceRequestModal.openModal();
-        }}>
-          Submit Service Request
+        <button className="btn btn-primary mb-3" onClick={openModal} >
+          Tambahkan Service Request
         </button>
 
         {serviceRequests.length === 0 ? (
