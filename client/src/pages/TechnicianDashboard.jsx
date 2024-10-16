@@ -117,7 +117,7 @@ const ServicePage = ({ user, setUser }) => {
         {serviceRequests.length === 0 ? (
           <p>No service requests submitted yet.</p>
         ) : (
-          <table className="table">
+          <table className="table table-bordered">
             <thead>
               <tr>
                 <th>Device Model</th>
