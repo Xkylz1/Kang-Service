@@ -5,11 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import apiEndpoints from "../api/config";
+import ServiceRequestModal from "../components/ServiceRequestModal"; // Assuming you have this component
 
-const ServicePage = ({ user,setUser }) => {
+const ServicePage = ({ user, setUser }) => {
   const [serviceRequests, setServiceRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   const navigate = useNavigate();
+  const { openModal } = ServiceRequestModal({ user, setLoading });
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -26,11 +29,7 @@ const ServicePage = ({ user,setUser }) => {
       setUser(null); // Clear user data
       localStorage.removeItem("user"); // Remove user from localStorage
       navigate("/"); // Redirect to login page
-      Swal.fire(
-        "Logged out",
-        "You have been logged out successfully.",
-        "success"
-      );
+      Swal.fire("Logged out", "You have been logged out successfully.", "success");
     }
   };
 
@@ -52,10 +51,9 @@ const ServicePage = ({ user,setUser }) => {
         setLoading(false);
       }
     };
-  
+
     fetchServiceRequests();
   }, [user.id]);
-  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -67,28 +65,28 @@ const ServicePage = ({ user,setUser }) => {
 
       <div className="container mt-5">
         <h1>Your Submitted Service Requests</h1>
+        
+        {/* Button to submit a new service request */}
+        <button className="btn btn-primary mb-3" onClick={openModal} >
+          Tambahkan Service Request
+        </button>
+
         {serviceRequests.length === 0 ? (
           <p>No service requests submitted yet.</p>
         ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Device Model</th>
-                <th>Description</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {serviceRequests.map((request) => (
-                <tr key={request.id}>
-                  <td>{request.deviceModel}</td>
-                  <td>{request.description}</td>
-                  {/* Shortened description */}
-                  <td>{request.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="row">
+            {serviceRequests.map((request) => (
+              <div key={request.id} className="col-md-4 mb-4">
+                <div className="card">
+                  <div className="card-body" style={{ minHeight: '150px' }}>
+                    <h5 className="card-title">{request.deviceModel}</h5>
+                    <p className="card-text">{request.description}</p>
+                    <p className="card-text"><strong>Status:</strong> {request.status}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>
