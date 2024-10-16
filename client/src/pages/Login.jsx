@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import apiEndpoints from "../api/config";
 
-
 function Login({ setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,13 +14,10 @@ function Login({ setUser }) {
     e.preventDefault();
     setLoading(true); // Start loading
     try {
-      const { data } = await axios.post(
-        `${apiEndpoints.login}`,
-        {
-          username,
-          password,
-        }
-      );
+      const { data } = await axios.post(`${apiEndpoints.login}`, {
+        username,
+        password,
+      });
 
       // Store user in localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -53,13 +49,40 @@ function Login({ setUser }) {
 
   return (
     <div
-      className="d-flex align-items-center justify-content-center bg-dark p-5"
-      style={{ height: "100vh", margin: 0 }} // Ensure no margin around the parent
+      className="d-flex align-items-center justify-content-center bg-dark p-md-5 p-3 "
+      // style={{ height: "100vh", margin: 0 }} // Ensure no margin around the parent
     >
-      <div className="row w-100 shadow p-5 rounded bg-secondary-subtle mx-5">
-        <div className="col"></div>
-        <div className="col-lg-4 col-md-6 p-5 bg-light rounded-3">
-          <div className="text-center">
+      <div className="row w-100 shadow p-md-5 p-2 rounded bg-secondary-subtle mx-md-5 mx-1 ">
+        <div className="col  bg-light rounded-3 m-1 d-none d-md-flex">
+          <div className=" align-self-center">
+            <div className="d-flex justify-content-center  ">
+              <img
+                src="images/biji.png"
+                style={{ height: "15rem" }}
+                alt="owner"
+                className=" mt-5"
+              />
+            </div>
+            <div className="p-5 text-center pt-1">
+              <h2>Kang Service</h2>
+              <p>
+                Tempat terpercaya untuk perbaikan smartphone dan komputer Anda.
+                Dengan layanan cepat dan profesional, kami siap mengembalikan
+                perangkat Anda ke kondisi terbaik.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-lg-4 col-md-6 p-3 py-5 p-md-5 bg-light rounded-3 m-1">
+          <div className="d-flex justify-content-center">
+            <img
+              style={{ height: "7rem" }}
+              src="images/brand-logo.png"
+              alt="Brand Logo"
+            />
+          </div>
+          <div className="text-center mt-3">
             <h3>Welcome Back!</h3>
             <p>Please enter your details</p>
           </div>

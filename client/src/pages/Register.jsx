@@ -118,7 +118,7 @@ function Register() {
             </div>
             <button
               type="submit"
-              className="btn btn-primary w-100 rounded-pill mt-3"
+              className="btn btn-dark w-100 rounded-pill mt-3"
               disabled={loading}
             >
               {loading ? "Registering..." : "Register"}

@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import apiEndpoints from '../api/config';
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 
 const ServiceRequestModal = ({ user, setLoading }) => {
-  const [deviceModel, setDeviceModel] = useState('');
-  const [issueDescription, setIssueDescription] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
+  const location = useLocation(); // Initialize useLocation to get the current route
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (deviceModel, issueDescription) => {
     // Check if the fields are filled
     if (!deviceModel || !issueDescription) {
       Swal.fire('Error', 'Please fill in all fields', 'error');
@@ -19,7 +20,7 @@ const ServiceRequestModal = ({ user, setLoading }) => {
     const serviceRequestData = {
       deviceModel,
       description: issueDescription,
-      status: 'pending',
+      status: 'In Queue',
       userId: user.id,
       technicianId: null,
     };
@@ -33,9 +34,6 @@ const ServiceRequestModal = ({ user, setLoading }) => {
       Swal.fire('Error', 'Failed to submit service request. Please try again.', 'error');
     } finally {
       setLoading(false);
-      // Clear inputs after submission
-      setDeviceModel('');
-      setIssueDescription('');
     }
   };
 
@@ -51,14 +49,19 @@ const ServiceRequestModal = ({ user, setLoading }) => {
         const deviceModelInput = Swal.getPopup().querySelector('#deviceModel').value;
         const issueDescriptionInput = Swal.getPopup().querySelector('#issueDescription').value;
 
-        // Update local state before submitting
-        setDeviceModel(deviceModelInput);
-        setIssueDescription(issueDescriptionInput);
         return { deviceModelInput, issueDescriptionInput };
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        handleSubmit();
+        const { deviceModelInput, issueDescriptionInput } = result.value;
+        handleSubmit(deviceModelInput, issueDescriptionInput);
+
+        // If the current route is already '/service', refresh the page
+        if (location.pathname === '/service') {
+          window.location.reload();
+        } else {
+          navigate('/service'); // Navigate to '/service' if not already there
+        }
       }
     });
   };

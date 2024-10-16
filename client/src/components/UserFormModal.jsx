@@ -31,15 +31,20 @@ const UserFormModal = ({ showModal, setShowModal, formData, handleInputChange, h
         </Form.Group>
 
         <Form.Group controlId="role">
-          <Form.Label>Role</Form.Label>
-          <Form.Control
-            type="text"
-            name="role"
-            value={formData.role}
-            onChange={handleInputChange}
-            placeholder="Enter role"
-          />
-        </Form.Group>
+  <Form.Label>Role</Form.Label>
+  <Form.Control
+    as="select"
+    name="role"
+    value={formData.role}
+    onChange={handleInputChange}
+  >
+    <option value="">Select role</option>
+    <option value="user">User</option>
+    <option value="admin">Admin</option>
+    <option value="technician">Technician</option>
+  </Form.Control>
+</Form.Group>
+
 
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
