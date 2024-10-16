@@ -4,10 +4,7 @@ import axios from 'axios';
 import apiEndpoints from '../api/config';
 
 const ServiceRequestModal = ({ user, setLoading }) => {
-  const [deviceModel, setDeviceModel] = useState('');
-  const [issueDescription, setIssueDescription] = useState('');
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (deviceModel, issueDescription) => {
     // Check if the fields are filled
     if (!deviceModel || !issueDescription) {
       Swal.fire('Error', 'Please fill in all fields', 'error');
@@ -33,9 +30,6 @@ const ServiceRequestModal = ({ user, setLoading }) => {
       Swal.fire('Error', 'Failed to submit service request. Please try again.', 'error');
     } finally {
       setLoading(false);
-      // Clear inputs after submission
-      setDeviceModel('');
-      setIssueDescription('');
     }
   };
 
@@ -51,14 +45,12 @@ const ServiceRequestModal = ({ user, setLoading }) => {
         const deviceModelInput = Swal.getPopup().querySelector('#deviceModel').value;
         const issueDescriptionInput = Swal.getPopup().querySelector('#issueDescription').value;
 
-        // Update local state before submitting
-        setDeviceModel(deviceModelInput);
-        setIssueDescription(issueDescriptionInput);
         return { deviceModelInput, issueDescriptionInput };
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        handleSubmit();
+        const { deviceModelInput, issueDescriptionInput } = result.value;
+        handleSubmit(deviceModelInput, issueDescriptionInput);
       }
     });
   };
