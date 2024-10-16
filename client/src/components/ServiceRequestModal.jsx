@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import apiEndpoints from '../api/config';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const ServiceRequestModal = ({ user, setLoading }) => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const handleSubmit = async (deviceModel, issueDescription) => {
     // Check if the fields are filled
     if (!deviceModel || !issueDescription) {
@@ -51,6 +53,7 @@ const ServiceRequestModal = ({ user, setLoading }) => {
       if (result.isConfirmed) {
         const { deviceModelInput, issueDescriptionInput } = result.value;
         handleSubmit(deviceModelInput, issueDescriptionInput);
+        navigate('/service'); // Navigate after submission
       }
     });
   };
