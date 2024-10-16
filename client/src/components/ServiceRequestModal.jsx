@@ -18,7 +18,7 @@ const ServiceRequestModal = ({ user, setLoading }) => {
     const serviceRequestData = {
       deviceModel,
       description: issueDescription,
-      status: 'pending',
+      status: 'Pending',
       userId: user.id,
       technicianId: null,
     };
