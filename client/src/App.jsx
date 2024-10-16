@@ -10,7 +10,8 @@ import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import LandingPage from "./pages/LandingPage";
 import UserPage from "./pages/UserPage";
-import ServicePage from './pages/ServicePage'; // Import ServicePage
+import ServicePage from './pages/ServicePage'; 
+import TechnicianDashboard from './pages/TechnicianDashboard'; // Import TechnicianDashboard
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -45,6 +46,8 @@ function App() {
                 <Navigate to="/admin" />
               ) : user.role === "user" ? (
                 <Navigate to="/user" />
+              ) : user.role === "technician" ? (
+                <Navigate to="/technician" />
               ) : (
                 <LandingPage />
               )
@@ -79,6 +82,16 @@ function App() {
           element={
             user && user.role === "user" ? (
               <ServicePage user={user} setUser={setUser}/>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/technician"
+          element={
+            user && user.role === "technician" ? (
+              <TechnicianDashboard onLogout={handleLogout} user={user} setUser={setUser} />
             ) : (
               <Navigate to="/" />
             )
