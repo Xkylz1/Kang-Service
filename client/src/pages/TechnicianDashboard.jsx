@@ -40,7 +40,14 @@ const ServicePage = ({ user, setUser }) => {
         const response = await axios.get(
           `${apiEndpoints.serviceRequest}` // Fetching by userId
         );
-        setServiceRequests(response.data); // Set the fetched service requests in state
+
+        // Sort service requests based on status
+        const sortedRequests = response.data.sort((a, b) => {
+          const statusOrder = { 'In Progress': 1, 'In Queue': 2, 'Completed': 3 }; // Updated key to match dropdown
+          return statusOrder[a.status] - statusOrder[b.status];
+        });
+
+        setServiceRequests(sortedRequests); // Set the sorted service requests in state
       } catch (error) {
         Swal.fire(
           "Error",
@@ -73,12 +80,18 @@ const ServicePage = ({ user, setUser }) => {
           status: newStatus,
         });
 
-        // Update the local state with the new status
-        setServiceRequests((prevRequests) =>
-          prevRequests.map((request) =>
+        // Update the local state with the new status and re-sort
+        setServiceRequests((prevRequests) => {
+          const updatedRequests = prevRequests.map((request) =>
             request.id === requestId ? { ...request, status: newStatus } : request
-          )
-        );
+          );
+
+          // Sort the updated requests
+          return updatedRequests.sort((a, b) => {
+            const statusOrder = { 'In Progress': 1, 'In Queue': 2, 'Completed': 3 }; // Updated key to match dropdown
+            return statusOrder[a.status] - statusOrder[b.status];
+          });
+        });
 
         Swal.fire("Updated!", "The status has been updated.", "success");
       } catch (error) {
@@ -100,7 +113,7 @@ const ServicePage = ({ user, setUser }) => {
       <Navbar handleLogout={handleLogout} />
 
       <div className="container mt-5">
-        <h1>Your Submitted Service Requests</h1>
+        <h1>Antrian Pekerjaan Kamu</h1>
         {serviceRequests.length === 0 ? (
           <p>No service requests submitted yet.</p>
         ) : (
@@ -118,7 +131,6 @@ const ServicePage = ({ user, setUser }) => {
                 <tr key={request.id}>
                   <td>{request.deviceModel}</td>
                   <td>{request.description}</td>
-                  {/* <td>{request.status}</td> */}
                   <td>
                     <select
                       value={request.status}
@@ -127,7 +139,7 @@ const ServicePage = ({ user, setUser }) => {
                       }
                       className="form-select"
                     >
-                      <option value="Pending">Pending</option>
+                      <option value="In Queue">In Queue</option> {/* Updated value to match the state */}
                       <option value="In Progress">In Progress</option>
                       <option value="Completed">Completed</option>
                     </select>
