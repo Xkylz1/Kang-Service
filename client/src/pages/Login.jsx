@@ -52,9 +52,10 @@ function Login({ setUser }) {
       className="d-flex align-items-center justify-content-center bg-dark p-md-5 p-3 "
       // style={{ height: "100vh", margin: 0 }} // Ensure no margin around the parent
     >
-      <div className="row w-100 shadow p-md-5 p-2 rounded bg-secondary-subtle mx-md-5 mx-1">
-        <div className="col  bg-light rounded-3 m-1 d-none d-md-block">
-            <div className="d-flex justify-content-center">
+      <div className="row w-100 shadow p-md-5 p-2 rounded bg-secondary-subtle mx-md-5 mx-1 ">
+        <div className="col  bg-light rounded-3 m-1 d-none d-md-flex">
+          <div className=" align-self-center">
+            <div className="d-flex justify-content-center  ">
               <img
                 src="images/biji.png"
                 style={{ height: "15rem" }}
@@ -70,6 +71,7 @@ function Login({ setUser }) {
                 perangkat Anda ke kondisi terbaik.
               </p>
             </div>
+          </div>
         </div>
 
         <div className="col-lg-4 col-md-6 p-3 py-5 p-md-5 bg-light rounded-3 m-1">
